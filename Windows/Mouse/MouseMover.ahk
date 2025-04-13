@@ -48,14 +48,3 @@ d up::
 
 ; CapsLock + A → 左クリック
 CapsLock & a::MouseClick "left"
-
-; Escキーでドラッグ状態を解除
-Esc::
-{
-    global dragging
-    if dragging {
-        dragging := false
-        MouseClick "left", , , 1, 0, "U"  ; ドラッグ中断
-    }
-    Send "{Esc}"  ; 通常のEscキーの機能も実行
-}
