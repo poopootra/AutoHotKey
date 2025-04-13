@@ -6,14 +6,23 @@ CapsLock::return
 ; f1キー単押しを無効化
 f1::return
 
-moveAmount := 10
+moveAmount := 25
 dragging := false
+
 
 ; CapsLock + 矢印キーでマウス移動
 CapsLock & Up::MouseMove(0, -moveAmount, 0, "R")
 CapsLock & Down::MouseMove(0, moveAmount, 0, "R")
 CapsLock & Left::MouseMove(-moveAmount, 0, 0, "R")
 CapsLock & Right::MouseMove(moveAmount, 0, 0, "R")
+
+; CapsLock + Ctrl + 矢印キーで細かいマウス移動
+#HotIf GetKeyState("Ctrl")
+CapsLock & Up::MouseMove(0, -moveAmount / 5, 0, "R")
+CapsLock & Down::MouseMove(0, moveAmount / 5, 0, "R")
+CapsLock & Left::MouseMove(-moveAmount / 5, 0, 0, "R")
+CapsLock & Right::MouseMove(moveAmount / 5, 0, "R")
+#HotIf
 
 ; CapsLock + D でマウス左ボタンを押す（ドラッグ開始）
 CapsLock & d::
@@ -23,7 +32,6 @@ CapsLock & d::
         dragging := true
         MouseClick "left", , , 1, 0, "D"  ; ← 押す
     }
-    return
 }
 
 ; CapsLock + D を離すとマウス左ボタンを離す（ドラッグ終了）
@@ -35,10 +43,19 @@ d up::
         dragging := false
         MouseClick "left", , , 1, 0, "U"  ; ← 離す
     }
-    return
 }
 #HotIf
 
-
 ; CapsLock + A → 左クリック
 CapsLock & a::MouseClick "left"
+
+; Escキーでドラッグ状態を解除
+Esc::
+{
+    global dragging
+    if dragging {
+        dragging := false
+        MouseClick "left", , , 1, 0, "U"  ; ドラッグ中断
+    }
+    Send "{Esc}"  ; 通常のEscキーの機能も実行
+}
